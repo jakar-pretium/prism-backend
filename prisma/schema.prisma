@@ -1,0 +1,168 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("PG_DATABASE_URL")
+}
+
+model User {
+  id         String   @id @default(uuid()) @db.Uuid
+  sub_id     String   @unique @db.Uuid
+  email      String   @unique
+  created_at DateTime @default(now())
+  name       String?
+  deals      Deal[]
+
+  @@map("users")
+}
+
+model Deal {
+  id                String          @id @default(uuid()) @db.Uuid
+  deal_name         String
+  sponsor           String
+  address           String
+  city              String
+  state             String          @db.Char(2)
+  zip_code          String
+  latitude          Decimal?        @db.Decimal(9, 6)
+  longitude         Decimal?        @db.Decimal(9, 6)
+  unit_count        Int?
+  total_lots        Int?
+  construction_year Int?
+  average_price     Decimal?        @db.Decimal(14, 2)
+  average_size_sf   Int?
+  loan_amount       Decimal?        @db.Decimal(14, 2)
+  loan_type         LoanType?
+  project_status    ProjectStatus?
+  created_at        DateTime        @default(now())
+  updated_at        DateTime        @updatedAt
+  user_sub_id       String?         @db.Uuid
+  notes             String?
+  property_type     PropertyTypes[]
+  dealReport        DealReport?
+  user              User?           @relation(fields: [user_sub_id], references: [sub_id])
+
+  @@index([user_sub_id])
+  @@map("deals")
+}
+
+model DealReport {
+  id     String           @id @default(uuid()) @db.Uuid
+  status DealReportStatus @default(in_progress)
+  dealId String           @unique @db.Uuid
+  report Json?
+  deal   Deal             @relation(fields: [dealId], references: [id])
+
+  @@map("deal_reports")
+}
+
+model glueJob {
+  id                String            @id @default(cuid())
+  name              String            @unique
+  role              String
+  created_on        DateTime
+  script_location   String
+  worker_type       String?
+  number_of_workers Int?
+  glue_version      String?
+  last_synced_at    DateTime?
+  is_deleted        Boolean           @default(false)
+  created_at        DateTime          @default(now())
+  updated_at        DateTime          @updatedAt
+  runs              glueJobRun[]
+  schedules         glueJobSchedule[]
+
+  @@index([is_deleted])
+  @@map("glue_jobs")
+}
+
+model glueJobSchedule {
+  id               String   @id @default(cuid())
+  name             String   @unique
+  type             String
+  state            String
+  schedule         String
+  job_name         String
+  verbose_cron_job String?
+  is_deleted       Boolean  @default(false)
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+  job              glueJob  @relation(fields: [job_name], references: [name], onDelete: Cascade)
+
+  @@unique([job_name, name])
+  @@index([job_name])
+  @@index([is_deleted])
+  @@map("glue_job_schedules")
+}
+
+model glueJobRun {
+  id              String          @id @default(cuid())
+  job_run_id      String          @unique
+  attempt         Int
+  status          String
+  started_at      DateTime
+  finished_at     DateTime?
+  execution_time  Int?
+  job_id          String
+  snowpipe_synced Boolean         @default(false)
+  is_deleted      Boolean         @default(false)
+  created_at      DateTime        @default(now())
+  updated_at      DateTime        @updatedAt
+  job             glueJob         @relation(fields: [job_id], references: [id], onDelete: Cascade)
+  snowpipe_events snowpipeEvent[]
+
+  @@index([job_id, started_at(sort: Desc)])
+  @@index([status])
+  @@index([is_deleted])
+  @@map("glue_job_runs")
+}
+
+model snowpipeEvent {
+  id                  String     @id @default(cuid())
+  table_catalog_name  String
+  table_schema_name   String
+  table_name          String
+  file_name           String     @unique
+  last_load_time      DateTime?
+  row_count           Int?
+  status              String
+  first_error_message String?
+  pipe_name           String
+  job_run_id          String
+  created_at          DateTime   @default(now())
+  updated_at          DateTime   @updatedAt
+  job_run             glueJobRun @relation(fields: [job_run_id], references: [job_run_id], onDelete: Cascade)
+
+  @@index([job_run_id])
+  @@index([status])
+  @@map("snowpipe_events")
+}
+
+enum PropertyTypes {
+  single_family
+  townhome
+  twinhome
+  other
+}
+
+enum LoanType {
+  fix_and_flip
+  new_construction
+  bridge_to_sale
+  other
+}
+
+enum ProjectStatus {
+  pre_construction
+  under_construction
+  completed
+  on_hold
+}
+
+enum DealReportStatus {
+  in_progress
+  failed
+  completed
+}
