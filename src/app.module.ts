@@ -5,11 +5,13 @@ import { CompsModule } from './comps/comps.module';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerMiddleware } from './logger.middleware';
 import { PropertySearchModule } from './property-search/property-search.module';
+import { MarketOverviewModule } from './market-overview/market-overview.module';
 
 @Module({
   imports: [
     CompsModule,
     PropertySearchModule,
+    MarketOverviewModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
