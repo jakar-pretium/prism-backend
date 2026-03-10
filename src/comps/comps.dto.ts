@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString, IsOptional } from 'class-validator';
 
-export class GetCompsDto {
+export class GetCompsQueryDto {
     @IsString()
     @IsNotEmpty()
     address: string;

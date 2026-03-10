@@ -1,5 +1,5 @@
 import { Body, Controller, Post, NotFoundException } from '@nestjs/common';
-import { GetCompsDto } from './comps.dto';
+import { GetCompsQueryDto } from './comps.dto';
 import { CompsService } from './comps.service';
 import { CognitoAuthGuard } from '../auth/cognito/cognito.guard';
 import { UseGuards } from '@nestjs/common';
@@ -12,7 +12,7 @@ export class CompsController {
 
     @UseGuards(CognitoAuthGuard)
     @Post()
-    async getComps(@Body() body: GetCompsDto, @CurrentUser() currentUser: any) {
+    async getComps(@Body() body: GetCompsQueryDto, @CurrentUser() currentUser: any) {
         const { address, city, state, zip, unit } = body;
 
         const comps = await this.compsService.getComps(

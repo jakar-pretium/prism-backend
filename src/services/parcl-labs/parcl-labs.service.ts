@@ -4,11 +4,14 @@ import https from 'https';
 import { ConfigService } from '@nestjs/config';
 
 const API_BASE_URL = 'https://api.parcllabs.com';
-const SEARCH_ADDRESS_PATH = '/v1/property/search_address';
 
 @Injectable()
 export class ParclLabsService {
-    constructor(private readonly configService: ConfigService) { }
+    private readonly PARCL_LABS_API_KEY: string;
+
+    constructor(private readonly configService: ConfigService) {
+        this.PARCL_LABS_API_KEY = this.configService.get<string>('PARCL_LABS_API_KEY') ?? '';
+    }
 
     async getParclComps(
         numBeds: number,
@@ -52,7 +55,7 @@ export class ParclLabsService {
                 {
                     headers: {
                         'Content-Type': 'application/json',
-                        Authorization: `${this.configService.get<string>('PARCL_LABS_API_KEY')}`,
+                        Authorization: `${this.PARCL_LABS_API_KEY}`,
                     },
                     timeout: 30000,
                     httpsAgent: new https.Agent({
@@ -124,13 +127,17 @@ export class ParclLabsService {
                 payload[0].unit = unit;
             }
 
+            const SEARCH_ADDRESS_PATH = '/v1/property/search_address';
+
+            console.log('payload', payload);
+
             const response = await axios.post(
                 `${API_BASE_URL}${SEARCH_ADDRESS_PATH}`,
                 payload,
                 {
                     headers: {
                         'Content-Type': 'application/json',
-                        Authorization: `${this.configService.get<string>('PARCL_LABS_API_KEY')}`,
+                        Authorization: `${this.PARCL_LABS_API_KEY}`,
                     },
                     timeout: 30000,
                     httpsAgent: new https.Agent({
