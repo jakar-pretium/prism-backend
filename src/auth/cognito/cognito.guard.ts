@@ -11,7 +11,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class CognitoAuthGuard implements CanActivate {
   private readonly cognitoIssuer =
     'https://cognito-idp.us-east-1.amazonaws.com/us-east-1_m0AxpaDJw';
   private readonly cognitoJwksUri = `${this.cognitoIssuer}/.well-known/jwks.json`;
