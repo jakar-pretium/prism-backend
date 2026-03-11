@@ -16,10 +16,6 @@ export class PropertySearchService {
     async searchProperty(inputAddress: string) {
         const feature = await this.mapboxService.geocode(inputAddress);
 
-        // simple snowflake query to see if connection is working
-        const result = await this.snowflakeService.executeQuery('SELECT CURRENT_TIMESTAMP()');
-        console.log('result', result);
-
         if (!feature) {
             throw new NotFoundException('Address not found');
         }
@@ -38,6 +34,6 @@ export class PropertySearchService {
             throw new NotFoundException('Property not found');
         }
 
-        return property;
+        return feature;
     }
 }

@@ -8,9 +8,9 @@ import { GetPropertySearchQueryDto } from './property-search.dto';
 export class PropertySearchController {
     constructor(private readonly propertySearchService: PropertySearchService) { }
 
-    @UseGuards(CognitoAuthGuard)
-    @Post('address')
-    async searchProperty(@Body() body: GetPropertySearchQueryDto) {
-        return this.propertySearchService.searchProperty(body.address);
+    //@UseGuards(CognitoAuthGuard)
+    @Get()
+    async searchProperty(@Query('address') address: string) {
+        return this.propertySearchService.searchProperty(address);
     }
 }

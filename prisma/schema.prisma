@@ -21,7 +21,7 @@ model User {
 model Deal {
   id                String          @id @default(uuid()) @db.Uuid
   deal_name         String
-  sponsor           String
+  sponsor           String?
   address           String
   city              String
   state             String          @db.Char(2)

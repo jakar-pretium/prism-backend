@@ -30,4 +30,19 @@ export class MapboxService {
 
         return feature;
     }
+
+    async reverseGeocode(latitude: string, longitude: string) {
+        const response = await axios.get(`https://api.mapbox.com/search/geocode/v6/reverse?access_token=${this.MAPBOX_API_KEY}&longitude=${longitude}&latitude=${latitude}`);
+        // return the feature with properties.feature_type = "address"
+        const feature = response.data.features.find((feature: any) => feature.properties.feature_type === "address");
+        if (!feature) {
+            return null;
+        }
+        return {
+            address: feature.properties.context.address.name,
+            city: feature.properties.context.place.name,
+            state: feature.properties.context.region.region_code,
+            zip: feature.properties.context.postcode.name,
+        }
+    }
 }

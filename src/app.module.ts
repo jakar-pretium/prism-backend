@@ -6,12 +6,20 @@ import { ConfigModule } from '@nestjs/config';
 import { LoggerMiddleware } from './logger.middleware';
 import { PropertySearchModule } from './property-search/property-search.module';
 import { MarketOverviewModule } from './market-overview/market-overview.module';
+import { DealsModule } from './deals/deals.module';
+import { MsaBtrModule } from './msa-btr/msa-btr.module';
+import { MsaMfModule } from './msa-mf/msa-mf.module';
+import { PropertySearchV2Module } from './property-search-v2/property-search.module';
 
 @Module({
   imports: [
     CompsModule,
     PropertySearchModule,
+    PropertySearchV2Module,
     MarketOverviewModule,
+    DealsModule,
+    MsaBtrModule,
+    MsaMfModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),

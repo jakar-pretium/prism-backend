@@ -8,6 +8,5 @@ import { SnowflakeModule } from 'src/services/snowflake/snowflake.module';
     imports: [CognitoAuthModule, SnowflakeModule],
     providers: [MarketOverviewService],
     controllers: [MarketOverviewController],
-    exports: [MarketOverviewService],
 })
 export class MarketOverviewModule { }
