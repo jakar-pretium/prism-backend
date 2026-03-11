@@ -10,6 +10,7 @@ import { DealsModule } from './deals/deals.module';
 import { MsaBtrModule } from './msa-btr/msa-btr.module';
 import { MsaMfModule } from './msa-mf/msa-mf.module';
 import { PropertySearchV2Module } from './property-search-v2/property-search.module';
+import { MarketMapModule } from './market-map/market-map.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { PropertySearchV2Module } from './property-search-v2/property-search.mod
     DealsModule,
     MsaBtrModule,
     MsaMfModule,
+    MarketMapModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
